@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Gizli Sekme</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            background-color: #06010f;
+            color: #FBFBFE;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            text-align: center;
+            max-width: 640px;
+            padding: 40px;
+            animation: fade-in 0.8s ease-out;
+        }
+
+        .icon-wrapper {
+            margin-bottom: 32px;
+            animation: pulse 4s infinite ease-in-out;
+        }
+
+        h1 {
+            font-size: 36px;
+            font-weight: 800;
+            margin-bottom: 16px;
+            letter-spacing: -0.5px;
+            color: #ffffff;
+        }
+
+        p {
+            font-size: 16px;
+            line-height: 1.6;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .search-container {
+            width: 100%;
+            max-width: 500px;
+            margin: 40px auto 0 auto;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            height: 52px;
+            background: rgba(123, 45, 255, 0.08); /* Mor tonlu arka plan */
+            border: 1px solid rgba(123, 45, 255, 0.3);
+            border-radius: 26px;
+            padding: 0 24px 0 52px;
+            color: white;
+            font-size: 15px;
+            outline: none;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            background: #06010f;
+            border-color: #7b2dff;
+            box-shadow: 0 0 15px rgba(123, 45, 255, 0.2);
+        }
+
+        .search-input::placeholder {
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 20px;
+            height: 20px;
+            stroke: rgba(255, 255, 255, 0.4);
+        }
+
+        @keyframes fade-in {
+            from { opacity: 0; transform: translateY(20px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); filter: drop-shadow(0 0 10px rgba(123,45,255,0.2)); }
+            50% { transform: scale(1.05); filter: drop-shadow(0 0 25px rgba(123,45,255,0.4)); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Kapüşonlu / Gözlüklü Ajan İkonu -->
+        <div class="icon-wrapper">
+            <svg xmlns="http://www.w3.org/2000/svg" width="160" height="160" viewBox="0 0 24 24" fill="none" stroke="#FBFBFE" stroke-width="1.5">
+                <!-- Şapka Kenarı -->
+                <path d="M1 12h22" stroke="#FBFBFE" stroke-width="2" stroke-linecap="round"/>
+                <!-- Şapka Üstü -->
+                <path d="M5 12V7a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v5" fill="rgba(123,45,255,0.1)" stroke="#FBFBFE" stroke-width="2" stroke-linejoin="round"/>
+                <path d="M5 12l2-7 M19 12l-2-7" stroke="#FBFBFE" stroke-width="1.5"/>
+                <!-- Gözlük -->
+                <circle cx="8" cy="16" r="3" fill="#1C1B22" stroke="#FBFBFE" stroke-width="2"/>
+                <circle cx="16" cy="16" r="3" fill="#1C1B22" stroke="#FBFBFE" stroke-width="2"/>
+                <path d="M11 16h2" stroke="#FBFBFE" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+        </div>
+        
+        <h1>Gizli Moddasınız</h1>
+        <p>
+            Bu sekmede ziyaret ettiğiniz sayfalar, aramalarınız veya doldurduğunuz formlar tarayıcı geçmişine <b>kaydedilmez</b>.
+            Tüm gizli sekmeleri kapattığınızda çerezler (cookies) anında otomatik olarak silinir.
+        </p>
+
+        <form class="search-container" id="search-form">
+            <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            </svg>
+            <input type="text" id="search-input" class="search-input" placeholder="Gizli arama yapın veya URL girin..." autocomplete="off">
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('search-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const query = document.getElementById('search-input').value.trim();
+            if (!query) return;
+
+            if (query.match(/^(http:\/\/|https:\/\/)/)) {
+                window.location.href = query;
+            } else if (query.includes('.') && !query.includes(' ')) {
+                window.location.href = 'https://' + query;
+            } else {
+                const url = new URLSearchParams(window.location.search);
+                const engine = url.get('engine') || 'Google';
+                const searchUrls = {
+                    'Google': 'https://www.google.com/search?q=',
+                    'DuckDuckGo': 'https://duckduckgo.com/?q=',
+                    'Bing': 'https://www.bing.com/search?q=',
+                    'Yandex': 'https://yandex.com/search/?text='
+                };
+                window.location.href = (searchUrls[engine] || searchUrls['Google']) + encodeURIComponent(query);
+            }
+        });
+    </script>
+</body>
+</html>
